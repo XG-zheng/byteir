@@ -22,6 +22,7 @@
 #include "byteir/Conversion/HloToByreTensor/HloToByreTensor.h"
 #include "byteir/Dialect/Byre/ByreDialect.h"
 #include "byteir/Dialect/Byre/Passes.h"
+#include "byteir/Dialect/mhlo/Transforms/ShapeReification.h"
 #include "byteir/Dialect/mhlo/Util/Util.h"
 #include "byteir/Pipelines/Common/Utils.h"
 #include "byteir/Transforms/Passes.h"
@@ -47,6 +48,7 @@ void createByreTensorOptPipelineImpl(OpPassManager &pm, std::string entryFunc,
       createConvertHloToByreCustomPass(getCudaByreCustomConfig()));
   pm.addNestedPass<func::FuncOp>(
       createConvertHloToByreTensorPass(appendArgTypes));
+  pm.addNestedPass<func::FuncOp>(createByteIRShapeReificationPass());
   pm.addPass(createCanonicalizerPass());
 }
 } // namespace
